@@ -2,14 +2,21 @@
 $(document).ready(function() {
   
   app.init();
+
+  setInterval(function() {
+    console.log('Loading. . . . ');
+    app.fetch();
+  }, 5000);
 }); 
 // YOUR CODE HERE:
 
 // Global variables
 var app = {};
+app.user = 'Captain Fancy Pants III';
 app.chats = {};
 app.displayed = [];
 app.chatCount = 0;
+app.firstLoad = true;
 
 app.init = function() {
   var context = this;
@@ -24,8 +31,12 @@ app.init = function() {
   // Event handling for submit buttom
   $('#send .submit').on('click',function(e) {
     e.preventDefault();
-    console.log("Fancy pants!");
     context.handleSubmit();
+  });
+
+  //set username
+  $('#setUser').on('click', function() {
+    app.user = prompt("Choose your username:");
   });
 };
 
@@ -46,7 +57,6 @@ app.fetch = function() {
     contentType: 'application/json',
     success: function(data) {
       context.chats = data.results;
-      // console.log(data.results);
     }
   }).done(function(){
     context.displayChats();
@@ -60,13 +70,19 @@ app.clearMessages = function() {
 //not for posting our texts
 app.addMessage = function(message_obj) {
 
+  var chatElement = '<div class="chat"><span class="chatNo">' + 
+        message_obj.chatNo + ' </span><span class="username">' + 
+        sanitize(message_obj.username) + ': </span><span class="message">' + 
+        sanitize(message_obj.text) + '</span><br/><small>' + message_obj.createdAt + '</small></div>';
+
   if(!_.contains(this.displayed, message_obj.objectId)) {
-
-    $('#chats').append('<div class="chat"><span class="chatNo">' + 
-      message_obj.chatNo + '</span><span class="username">' + 
-      sanitize(message_obj.username) + '</span><span class="message">' + 
-      sanitize(message_obj.text) + '</span></div>');
-
+    if(this.firstLoad) {
+      $('#chats').append(chatElement);  
+      this.firstLoad = false;
+    } else {
+      $('#chats').prepend(chatElement);
+    }
+    
     this.displayed.push(message_obj.objectId);
   }
 };
@@ -82,18 +98,16 @@ app.addFriend = function(message_obj) {
 };
 
 app.handleSubmit = function() {
-
   var context = this;
 
   var text = $('#message').val();
-  
+  $('#message').val('');
   var sendMessage = {
-    username: 'Captain Fancy Pants',
+    username: context.user,
     text: text
   }
-  
-  context.send(sendMessage);
 
+  context.send(sendMessage);
 };
 
 app.displayChats = function() {
@@ -103,11 +117,8 @@ app.displayChats = function() {
     context.chatCount++;
     chatObj.chatNo = context.chatCount;
   });
-
-  _.each(this.chats.reverse(), function(chat) {
-
-    //deal with undefined chat properties
-
+  
+  _.each(this.chats, function(chat) {
     context.addMessage(chat);
   });
 };
