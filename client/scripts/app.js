@@ -1,15 +1,17 @@
 
 $(document).ready(function() {
+  
   app.init();
 }); 
 // YOUR CODE HERE:
 
+// Global variables
 var app = {};
+app.chats = {};
 
 app.init = function() {
   var context = this;
 
-  //console.log(this.fetch);
   this.fetch();
   
   // Event handling for clicking on username
@@ -17,16 +19,8 @@ app.init = function() {
     context.addFriend();
   });
 
-/*
-  $('#send').submit(function(event) {
-    console.log('POOOOOO');
-  });
-
-*/
-
-
   // Event handling for submit buttom
-  $('#send .submit').on('submit',function(e) {
+  $('#send .submit').on('click',function(e) {
     e.preventDefault();
     console.log("Fancy pants!");
     context.handleSubmit();
@@ -43,13 +37,17 @@ app.send = function(message) {
 };
 
 app.fetch = function() {
+  var context = this;
   $.ajax({
     type: 'GET',
     url: 'https://api.parse.com/1/classes/chatterbox',
     contentType: 'application/json',
-    success: function() {
-      console.log('whoop!');
+    success: function(data) {
+      context.chats = data.results;
+      // console.log(data.results);
     }
+  }).done(function(){
+    context.displayChats();
   });
 };
 
@@ -58,9 +56,9 @@ app.clearMessages = function() {
 };
 
 app.addMessage = function(message_obj) {
-  $('#chats').append('<div><span class="username">' + 
-    message_obj.username + '</span><span class="message">' + 
-    message_obj.text + '</span></div>');
+  $('#chats').append('<div class="chat"><span class="username">' + 
+    sanitize(message_obj.username) + '</span><span class="message">' + 
+    sanitize(message_obj.text) + '</span></div>');
 };
 
 app.addRoom = function(room) {
@@ -74,9 +72,39 @@ app.addFriend = function(message_obj) {
 };
 
 app.handleSubmit = function() {
-  console.log("Handle Submit Called!");
-  //return true;
+
+  var context = this;
+
+  var text = $('#message').val();
+  
+  console.log(text);
+  
+  context.send();
+
 };
+
+app.displayChats = function() {
+  var context = this;
+  _.each(this.chats, function(chat) {
+
+    //deal with undefined chat properties
+
+    context.addMessage(chat);
+  });
+};
+
+var sanitize = function(input) {
+  var output = input === undefined ? undefined : input.replace(/<script[^>]*?>.*?<\/script>/gi, '').
+    replace(/<[\/\!]*?[^<>]*?>/gi, '').
+    replace(/<style[^>]*?>.*?<\/style>/gi, '').
+    replace(/<![\s\S]*?--[ \t\n\r]*>/gi, '');
+  
+  return output;
+};
+
+
+
+
 
 
 
