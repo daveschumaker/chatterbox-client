@@ -8,6 +8,8 @@ $(document).ready(function() {
 // Global variables
 var app = {};
 app.chats = {};
+app.displayed = [];
+app.chatCount = 0;
 
 app.init = function() {
   var context = this;
@@ -57,9 +59,16 @@ app.clearMessages = function() {
 
 //not for posting our texts
 app.addMessage = function(message_obj) {
-  $('#chats').append('<div class="chat"><span class="username">' + 
-    sanitize(message_obj.username) + '</span><span class="message">' + 
-    sanitize(message_obj.text) + '</span></div>');
+
+  if(!_.contains(this.displayed, message_obj.objectId)) {
+
+    $('#chats').append('<div class="chat"><span class="chatNo">' + 
+      message_obj.chatNo + '</span><span class="username">' + 
+      sanitize(message_obj.username) + '</span><span class="message">' + 
+      sanitize(message_obj.text) + '</span></div>');
+
+    this.displayed.push(message_obj.objectId);
+  }
 };
 
 app.addRoom = function(room) {
@@ -89,7 +98,13 @@ app.handleSubmit = function() {
 
 app.displayChats = function() {
   var context = this;
-  _.each(this.chats, function(chat) {
+
+  _.each(this.chats, function(chatObj) {
+    context.chatCount++;
+    chatObj.chatNo = context.chatCount;
+  });
+
+  _.each(this.chats.reverse(), function(chat) {
 
     //deal with undefined chat properties
 
