@@ -56,7 +56,7 @@ app.displayChats = function() {
     context.getRooms(chat);  
     //TODO: make this filter better..
     if(chat.username !== undefined || chat.username !== '' || chat.username !== null) {
-      console.log(chat.username);
+      // console.log(chat.username);
       context.addMessage(chat);
     }
   });

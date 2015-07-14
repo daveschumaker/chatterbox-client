@@ -20,6 +20,7 @@ app.chats = {};
 app.displayed = []; // Push ObjectID of chat messages here so we can make sure we aren't posting duplicates.
 app.firstLoad = true; // Track whether we're loading the app for the first time.
 app.rooms = {}; // Build and store our list of chatrooms. TODO: Make this work.
+app.currentRoom = null; // Stores the current room that we'll pass into our chat iterator
 
 app.init = function() {
   var context = this;
@@ -40,6 +41,11 @@ app.init = function() {
   //set username
   $('#setUser').on('click', function() {
     app.user = prompt("Choose your username:");
+  });
+
+  $('#rooms').change(function() {
+    context.currentRoom = $(this).find('option:selected').text();
+    console.log(context.currentRoom);
   });
 };
 
