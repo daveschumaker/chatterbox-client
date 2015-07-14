@@ -8,8 +8,12 @@ app.fetch = function() {
       context.chats = data.results;
     }
   }).done(function(){
+
     // After AJAX GET call completes, we invoke the .displayChats() method to iterate through all chat data.
     context.displayChats();
+
+    //maybe implement:
+    // context.chatWorker(['addMessage', 'getRooms']);
   });
 };
 
@@ -33,11 +37,23 @@ app.addMessage = function(message_obj) {
   }
 };
 
+//maybe implement:
+app.chatWorker = function(applyMethods) {
+//   _.each(this.chats, function(chat) {
+//     _.each(applyMethods) {
+//       //apply method to chat
+//       // Get rooms
+//       // Get chat info
+//       // Now addMessages
+//     }
+//   });
+};
 
 app.displayChats = function() {
   var context = this;
   
   _.each(this.chats, function(chat) {
+    context.getRooms(chat);  
     //TODO: make this filter better..
     if(chat.username !== undefined || chat.username !== '' || chat.username !== null) {
       console.log(chat.username);
@@ -45,3 +61,20 @@ app.displayChats = function() {
     }
   });
 };
+
+app.getRooms = function(chat) {
+  if(chat.roomname === undefined) {
+    //do nothing
+    return;
+  }
+  if(!this.rooms[chat.roomname]) {
+    this.rooms[chat.roomname] = 1;
+    $('#rooms').append('<option id="' + chat.roomname + '">' + chat.roomname + '</option>');
+  } else {
+    this.rooms[chat.roomname]++;
+  }
+};
+
+
+
+

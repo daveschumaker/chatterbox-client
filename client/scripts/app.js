@@ -14,6 +14,8 @@ $(document).ready(function() {
 // Global variables
 var app = {};
 app.user = 'Captain Fancy Pants III';
+app.beersDaveOwes = 1;
+app.beersHarryOwes = 0;
 app.chats = {};
 app.displayed = []; // Push ObjectID of chat messages here so we can make sure we aren't posting duplicates.
 app.firstLoad = true; // Track whether we're loading the app for the first time.
