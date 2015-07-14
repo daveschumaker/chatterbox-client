@@ -55,6 +55,7 @@ app.clearMessages = function() {
   $('#chats').html('');
 };
 
+//not for posting our texts
 app.addMessage = function(message_obj) {
   $('#chats').append('<div class="chat"><span class="username">' + 
     sanitize(message_obj.username) + '</span><span class="message">' + 
@@ -77,9 +78,12 @@ app.handleSubmit = function() {
 
   var text = $('#message').val();
   
-  console.log(text);
+  var sendMessage = {
+    username: 'Captain Fancy Pants',
+    text: text
+  }
   
-  context.send();
+  context.send(sendMessage);
 
 };
 
