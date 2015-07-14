@@ -8,7 +8,6 @@ app.fetch = function() {
       context.chats = data.results;
     }
   }).done(function(){
-
     // After AJAX GET call completes, we invoke the .displayChats() method to iterate through all chat data.
     context.displayChats();
 
@@ -23,7 +22,8 @@ app.addMessage = function(message_obj) {
 
   var chatElement = '<div class="chat"><span class="username">' + 
         sanitize(message_obj.username) + ': </span><span class="message">' + 
-        sanitize(message_obj.text) + '</span><br/><small>' + message_obj.createdAt + '</small></div>';
+        sanitize(message_obj.text) + '</span><br/><small>' + message_obj.createdAt 
+        + '</small><br><small>Room name: ' + sanitize(message_obj.roomname) + '</small></div>';
 
   if(!_.contains(this.displayed, message_obj.objectId)) {
     if(this.firstLoad) {
@@ -54,10 +54,23 @@ app.displayChats = function() {
   
   _.each(this.chats, function(chat) {
     context.getRooms(chat);  
+    context.storeChat(chat);
+  });
+  
+  _.each(context.chatStorage, function(chat) {
     //TODO: make this filter better..
     if(chat.username !== undefined || chat.username !== '' || chat.username !== null) {
-      // console.log(chat.username);
-      context.addMessage(chat);
+
+      //if app.currentRoom is null, display all by default
+      if(context.currentRoom === null) {
+        context.addMessage(chat);
+      }
+
+      //if chat.roomname is same as app.currentRoom, then display
+      else if(chat.roomname === context.currentRoom) {
+        context.addMessage(chat);
+      }
+
     }
   });
 };
@@ -75,6 +88,12 @@ app.getRooms = function(chat) {
   }
 };
 
+app.storeChat = function(chat) {
+  var context = this;
+  if(!context.chatStorage[chat.objectId]) {
+    context.chatStorage[chat.objectId] = chat;
+  }
+};
 
 
 

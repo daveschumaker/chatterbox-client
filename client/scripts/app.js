@@ -16,6 +16,7 @@ var app = {};
 app.user = 'Captain Fancy Pants III';
 app.beersDaveOwes = 1;
 app.beersHarryOwes = 0;
+app.chatStorage = {};
 app.chats = {};
 app.displayed = []; // Push ObjectID of chat messages here so we can make sure we aren't posting duplicates.
 app.firstLoad = true; // Track whether we're loading the app for the first time.
@@ -38,13 +39,25 @@ app.init = function() {
     context.handleSubmit();
   });
 
+  // Create a new chatroom
+  $('#createRoom').on('click', function() {
+    app.currentRoom = prompt("Create a new room:");
+    $('#rooms').append('<option id="' + app.roomname + '">' + app.roomname + '</option>');
+  });
+
   //set username
   $('#setUser').on('click', function() {
     app.user = prompt("Choose your username:");
-  });
+  });  
 
   $('#rooms').change(function() {
     context.currentRoom = $(this).find('option:selected').text();
+    if (context.currentRoom === 'All Rooms') {
+      context.currentRoom = null;
+    }
+    $('#chats').html('');
+    app.displayed = [];
+    app.displayChats();
     console.log(context.currentRoom);
   });
 };
@@ -66,6 +79,10 @@ app.addFriend = function(message_obj) {
 
 //utility funcs
 var sanitize = function(input) {
+  if (input === null) {
+    input = '';
+  }
+
   var output = input === undefined ? undefined : input.replace(/<script[^>]*?>.*?<\/script>/gi, '').
     replace(/<[\/\!]*?[^<>]*?>/gi, '').
     replace(/<style[^>]*?>.*?<\/style>/gi, '').

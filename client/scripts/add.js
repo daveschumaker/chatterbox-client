@@ -16,7 +16,8 @@ app.handleSubmit = function() {
   $('#message').val('');
   var sendMessage = {
     username: context.user,
-    text: text
+    text: text,
+    roomname: context.currentRoom
   }
 
   context.send(sendMessage);
