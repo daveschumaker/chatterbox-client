@@ -14,12 +14,12 @@ $(document).ready(function() {
 // Global variables
 var app = {};
 app.user = 'Captain Fancy Pants III';
-app.beersDaveOwes = 1;
+app.beersDaveOwes = 1; // This is a lie.
 app.beersHarryOwes = 0;
-app.chatStorage = {};
-app.chats = {};
+app.chatStorage = {}; // Stores ALL chat messages we've recevied since the page loaded. (Useful for filtering between rooms)
+app.chatKeyList = []; // Store ObjectId keys from chat messages to properly sort and display messages in the DOM.
+app.chats = {}; // Real time updated list of the chats we've received from the server.
 app.displayed = []; // Push ObjectID of chat messages here so we can make sure we aren't posting duplicates.
-app.firstLoad = true; // Track whether we're loading the app for the first time.
 app.rooms = {}; // Build and store our list of chatrooms. TODO: Make this work.
 app.currentRoom = null; // Stores the current room that we'll pass into our chat iterator
 
@@ -56,6 +56,7 @@ app.init = function() {
       context.currentRoom = null;
     }
     $('#chats').html('');
+    // app.firstLoad = true;
     app.displayed = [];
     app.displayChats();
     console.log(context.currentRoom);
