@@ -35,5 +35,13 @@
       <div id="chats"></div>
 
     </div>
+    <script type="text/javascript">
+      // var message = new Message();
+      var messages = new Messages();
+      // messages.fetch();
+      // var messageView = new MessageView({ model: message });
+      var messagesView = new MessagesView({ collection: messages });
+      messagesView.render();
+    </script>
   </body>
 </html>

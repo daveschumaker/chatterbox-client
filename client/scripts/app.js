@@ -11,20 +11,42 @@ var Messages = Backbone.Collection.extend({
   model: Message,
   url: 'https://api.parse.com/1/classes/chatterbox',
   parse: function(response, options) {
-    console.log('response from parse method:');
-    console.log(response);
+    // console.log('response from parse method:');
+    // console.log(response);
     return response.results;
   }
 });
 
 
 var MessageView = Backbone.View.extend({
-
+  template: _.template("<div><%- objectId %></div>"),
+  render: function() {
+    // console.log(this.template);
+    // console.log(this.model.attributes);
+    this.$el.html(this.template(this.model.attributes));
+    // console.log(this);
+    return this.$el;
+    // console.log(this.model.attributes);
+  }
 });
 
 var MessagesView = Backbone.View.extend({
+  initialize: function() {
+    this.collection.on('sync', this.render, this);
+    this.collection.fetch();
+  },
   render: function() {
-    console.log(this.collection);
+    //this, in this case, is the 
+    this.collection.forEach(this.renderMessage, this);
+  },
+  renderMessage: function (message) {
+    // ??? call template function somehow
+    var messageView = new MessageView({ model: message });
+    // messageView.render();
+    
+    this.$el.append(messageView.render());
+    // console.log(messageView);
+    // console.log(this);
   }
 });
 
