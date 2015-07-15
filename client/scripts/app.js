@@ -1,12 +1,49 @@
 
+//////////////////////////////////////
+// BACKBONE STUFF
+//////////////////////////////////////
+
+var Message = Backbone.Model.extend({
+
+});
+
+var Messages = Backbone.Collection.extend({
+  model: Message,
+  url: 'https://api.parse.com/1/classes/chatterbox',
+  parse: function(response, options) {
+    console.log('response from parse method:');
+    console.log(response);
+    return response.results;
+  }
+});
+
+
+var MessageView = Backbone.View.extend({
+
+});
+
+var MessagesView = Backbone.View.extend({
+  render: function() {
+    console.log(this.collection);
+  }
+});
+
+
+
+
+//////////////////////////////////////
+// JQUERY STUFF
+//////////////////////////////////////
+
+
 //to execute on load
 $(document).ready(function() {
   
-  app.init();
+  //app.init();
 
   setInterval(function() {
-    console.log('Loading. . . . ');
-    app.fetch();
+    //console.log('Loading. . . . ');
+    //app.fetch();
   }, 5000);
 }); 
 
